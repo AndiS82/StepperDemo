@@ -1,0 +1,421 @@
+<!--   Stepper Erster Schritt -->
+
+<mat-stepper #stepper>
+  <mat-step [stepControl]="firstForm">
+    <form [formGroup]="firstForm">
+      <ng-template matStepLabel>Persönliche Daten</ng-template>
+      <mat-card appearance="outlined" class="cardContent">
+        <mat-card-content>
+          <div class="control">
+            <div class="checkboxContainer">
+              <h4>Persönliche Daten</h4>
+              <p>
+                Bitte füllen Sie zur Anmeldung das untenstehende Formular
+                aus.<br />
+                Die mit einem * markierten Eingabefelder sind Pflichtfelder.
+              </p>
+            </div>
+            <div class="formFieldContainer">
+              <mat-form-field class="formField">
+                <mat-label>Anrede</mat-label>
+                <mat-select formControlName="address">
+                  <mat-option value="Herr">Herr</mat-option>
+                  <mat-option value="Frau">Frau</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field class="formField">
+                <mat-label>Titel</mat-label>
+                <mat-select formControlName="title">
+                  <mat-option value="Dr. med.">Dr. med.</mat-option>
+                  <mat-option value="Dr. med. dent.">Dr. med. dent.</mat-option>
+                  <mat-option value="Prof. Dr. med.">Prof. Dr. med.</mat-option>
+                  <mat-option value="Dr. med. habil."
+                    >Dr. med. habil.</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="formFieldContainer">
+              <mat-form-field class="formField">
+                <mat-label>Vorname</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  formControlName="firstName"
+                  required
+                />
+                @if (firstForm.controls.firstName.invalid){<mat-error
+                  >Vorname ist erforderlich</mat-error
+                >}
+              </mat-form-field>
+              <mat-form-field class="formField">
+                <mat-label>Nachname</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  formControlName="lastName"
+                  required
+                />
+                @if (firstForm.controls.lastName.invalid){<mat-error
+                  >Nachname ist erforderlich</mat-error
+                >}
+              </mat-form-field>
+            </div>
+            <div class="formFieldContainer">
+              <mat-form-field class="formField">
+                <mat-label>Straße</mat-label>
+                <input type="text" matInput formControlName="street" />
+              </mat-form-field>
+              <mat-form-field class="formField">
+                <mat-label>Hausnummer</mat-label>
+                <input type="number" matInput formControlName="number" />
+              </mat-form-field>
+            </div>
+            <div class="formFieldContainer">
+              <mat-form-field class="formField">
+                <mat-label>Postleitzahl</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="zipcode"
+                  (input)="onInputChange($event)"
+                />
+              </mat-form-field>
+              <mat-form-field class="formField">
+                <mat-label>Ort</mat-label>
+                <input type="text" matInput formControlName="city" />
+              </mat-form-field>
+            </div>
+            <div class="formFieldContainer">
+              <mat-form-field class="formField">
+                <mat-label>Geburtstag</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="born"
+                />
+                <mat-hint>DD/MM/YYYY</mat-hint>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field class="formField">
+                <mat-label>Telefon</mat-label>
+                <div class="phone-container">
+                  <input
+                    type="tel"
+                    matInput
+                    formControlName="areaCode"
+                    maxlength="4"
+                    pattern="[0-9]*"
+                    placeholder="Vorwahl"
+                    (input)="moveToNextField($event, phoneNumberInput)"
+                  />
+                  <span class="example-tel-input-spacer">/</span>
+                  <input
+                    type="tel"
+                    matInput
+                    formControlName="phoneNumber"
+                    maxlength="8"
+                    pattern="[0-9]*"
+                    placeholder="Nummer"
+                    #phoneNumberInput
+                  />
+                </div>
+                <mat-icon matSuffix>phone</mat-icon>
+              </mat-form-field>
+              <div class="formFieldContainer">
+                <mat-form-field class="formField">
+                  <mat-label>E-Mail</mat-label>
+                  <input type="email" matInput formControlName="email" />
+
+                  @if (emailIsInvalid){<mat-error
+                    >Email ist erforderlich</mat-error
+                  >} @if (firstForm.controls.email.hasError('email')){
+                  <mat-error>Ungültige Email-Adresse</mat-error>}
+                </mat-form-field>
+
+                <mat-form-field class="formField">
+                  <mat-label for="confirmEmail">E-Mail wiederholen</mat-label>
+                  <input
+                    matInput
+                    class="custom-input"
+                    type="email"
+                    formControlName="confirmEmail"
+                    (keyup)="show()"
+                  />
+                  @if(firstForm.errors?.['emailMismatch']) {
+                  <mat-error class="custom-error">{{
+                    errorMessage()
+                  }}</mat-error>
+                  } @if(confirmEmailIsInvalid){
+                  <mat-error>Email ist erforderlich</mat-error>
+                  } @if (firstForm.controls.confirmEmail.hasError('email')){
+                  <mat-error>Ungültige Email-Adresse</mat-error>}
+                  <!-- @if(firstForm.hasError('emailMismatch')){
+                  <mat-error>Emailadressen stimmen nicht überein.</mat-error>
+                  } -->
+                </mat-form-field>
+                <div class="formField">
+                  @if(firstForm.errors?.['emailMismatch']) {
+                  <mat-error style="padding: 0 0 10px 0">{{
+                    errorMessage()
+                  }}</mat-error>
+                  } @if(!firstForm.errors?.['emailMismatch']) {
+                  <mat-error style="padding: 0 0 10px 0"></mat-error>
+                  }
+                </div>
+              </div>
+            </div>
+            <div>
+              <button
+                mat-button
+                matStepperNext
+                (click)="onSubmit()"
+                [disabled]="firstForm.invalid"
+              >
+                Weiter
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </form>
+  </mat-step>
+
+  <!--   Stepper Zweiter Schritt -->
+
+  <mat-step [stepControl]="secondForm">
+    <form [formGroup]="secondForm">
+      <ng-template matStepLabel>Einwilligung</ng-template>
+      <mat-card appearance="outlined" class="cardContent">
+        <mat-card-content>
+          <div class="control">
+            <div class="checkboxContainer">
+              <div>
+                <h4>Einwilligung zur Verarbeitung persönlicher Daten</h4>
+                <p>
+                  Bitte lesen und akzeptieren Sie die nachfolgenden
+                  Vereinbarungen.
+                </p>
+              </div>
+              <div class="checkbox">
+                <div>
+                  <mat-checkbox
+                    class="example-margin"
+                    formControlName="acceptedFirst"
+                    required
+                    >Ich habe die Regeln zum Erhalt einer Mitgliedschaft gelesen
+                    und akzeptiere sie.*</mat-checkbox
+                  >
+                  <mat-icon
+                    style="margin-left: 25px; cursor: pointer"
+                    (click)="
+                      openDialog('Mitgliedschaftsregeln', 'Lorem Ipsum...')
+                    "
+                    matSuffix
+                    >info</mat-icon
+                  >
+                </div>
+                <div>
+                  <mat-checkbox
+                    class="example-margin"
+                    formControlName="acceptedSecond"
+                    required
+                    >Ich habe die Datenschutzrichtlinie gelesen und akzeptiere
+                    sie.*</mat-checkbox
+                  ><mat-icon
+                    (click)="
+                      openDialog('Datenschutzrichtlinie', 'Lorem Ipsum...')
+                    "
+                    style="margin-left: 25px; cursor: pointer"
+                    matSuffix
+                    >info</mat-icon
+                  >
+                </div>
+              </div>
+            </div>
+            <div>
+              <button mat-button matStepperPrevious>Zurück</button>
+              <button mat-button matStepperNext [disabled]="secondForm.invalid">
+                Weiter
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </form>
+  </mat-step>
+
+  <!--   Stepper Letzter Schritt -->
+
+  <mat-step>
+    <ng-template matStepLabel>Abschluss</ng-template>
+    <mat-card appearance="outlined" class="cardContent">
+      <mat-card-content>
+        <div class="control">
+          <div class="checkboxContainer">
+            <div>
+              <h4>Überblick</h4>
+              <p>
+                Hier können Sie Ihre eingegebenen Daten überprüfen und den
+                Antrag absenden.
+              </p>
+            </div>
+          </div>
+          <div class="formFieldContainer">
+            <mat-form-field class="formField">
+              <mat-label>Anrede</mat-label>
+              <mat-select disabled [value]="firstForm.get('address')?.value">
+                <mat-option value="Herr">Herr</mat-option>
+                <mat-option value="Frau">Frau</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="formField">
+              <mat-label>Titel</mat-label>
+              <mat-select disabled [value]="firstForm.get('title')?.value">
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="formFieldContainer">
+            <mat-form-field class="formField">
+              <mat-label>Vorname</mat-label>
+              <input
+                disabled
+                type="text"
+                matInput
+                [value]="firstForm.get('firstName')?.value"
+              />
+            </mat-form-field>
+            <mat-form-field class="formField">
+              <mat-label>Nachname</mat-label>
+              <input
+                type="text"
+                matInput
+                [value]="firstForm.get('lastName')?.value"
+                disabled
+              />
+            </mat-form-field>
+          </div>
+          <div class="formFieldContainer">
+            <mat-form-field class="formField">
+              <mat-label>Straße</mat-label>
+              <input
+                type="text"
+                matInput
+                [value]="firstForm.get('street')?.value"
+                disabled
+              />
+            </mat-form-field>
+            <mat-form-field class="formField">
+              <mat-label>Hausnummer</mat-label>
+              <input
+                type="number"
+                matInput
+                disabled
+                [value]="firstForm.get('number')?.value"
+              />
+            </mat-form-field>
+          </div>
+          <div class="formFieldContainer">
+            <mat-form-field class="formField">
+              <mat-label>Postleitzahl</mat-label>
+              <input
+                matInput
+                type="number"
+                disabled
+                [value]="firstForm.get('zipcode')?.value"
+              />
+            </mat-form-field>
+            <mat-form-field class="formField">
+              <mat-label>Ort</mat-label>
+              <input
+                type="text"
+                matInput
+                [value]="firstForm.get('city')?.value"
+                disabled
+              />
+            </mat-form-field>
+          </div>
+          <div class="formFieldContainer">
+            <mat-form-field class="formField">
+              <mat-label>Geburtstag</mat-label>
+              <input matInput [value]="firstForm.get('born')?.value" disabled />
+              <mat-hint>DD/MM/YYYY</mat-hint>
+              <mat-datepicker-toggle
+                matIconSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field class="formField">
+              <mat-label>Telefon</mat-label>
+              <div class="phone-container">
+                <input
+                  type="tel"
+                  matInput
+                  maxlength="4"
+                  pattern="[0-9]*"
+                  disabled
+                  [value]="firstForm.get('areaCode')?.value"
+                />
+                <span class="example-tel-input-spacer">/</span>
+                <input
+                  type="tel"
+                  matInput
+                  maxlength="8"
+                  pattern="[0-9]*"
+                  disabled
+                  [value]="firstForm.get('phoneNumber')?.value"
+                />
+              </div>
+              <mat-icon matSuffix>phone</mat-icon>
+            </mat-form-field>
+            <div class="formFieldContainer">
+              <mat-form-field class="formField">
+                <mat-label>E-Mail</mat-label>
+                <input
+                  type="email"
+                  matInput
+                  disabled
+                  [value]="firstForm.get('email')?.value"
+                />
+              </mat-form-field>
+
+              <mat-form-field class="formField">
+                <mat-label for="confirmEmail">E-Mail wiederholen</mat-label>
+                <input
+                  matInput
+                  class="custom-input"
+                  type="email"
+                  [value]="firstForm.get('confirmEmail')?.value"
+                  disabled
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="checkbox">
+            <div>
+              <mat-checkbox class="example-margin" checked disabled
+                >Ich habe die Regeln zum Erhalt einer Mitgliedschaft gelesen und
+                akzeptiere sie.*</mat-checkbox
+              >
+            </div>
+            <div>
+              <mat-checkbox class="example-margin" checked disabled
+                >Ich habe die Datenschutzrichtlinie gelesen und akzeptiere
+                sie.*</mat-checkbox
+              >
+            </div>
+          </div>
+          <div>
+            <button mat-button matStepperPrevious>Zurück</button>
+            <button mat-button (click)="submit()">Bestätigen</button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-step>
+</mat-stepper>

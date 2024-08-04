@@ -1,0 +1,18 @@
+footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: baseline;
+}
+
+a {
+  text-decoration: none;
+}
+a:hover  {
+  background-color: cornflowerblue;
+  border-radius: 15px;
+}
+
+.spacer {
+  margin-right: 15px;
+}
